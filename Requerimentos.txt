@@ -1,0 +1,5 @@
+opencv-python 
+tkcalendar
+tkinter
+shutil
+pillow
