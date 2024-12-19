@@ -1,4 +1,3 @@
-from calendar import Calendar
 import datetime
 from logging import root
 import os
@@ -8,6 +7,8 @@ import cv2
 import tkinter as tk
 
 from datetime import datetime
+
+from tkcalendar import *
 
 from tkintermapview import TkinterMapView
 from geopy.geocoders import Nominatim
@@ -76,9 +77,9 @@ def interfaz_principal():
     entry_metros = tk.Entry(frame_opciones)
     entry_metros.pack()
     
-    #tk.Label(frame_opciones, text="Fecha:").pack()
-    #cal = Calendar(root, selectmode="day", date_pattern="yyyy-mm-dd")
-    #cal.pack()
+    tk.Label(frame_opciones, text="Fecha:").pack()
+    cal = Calendar(frame_opciones, selectmode="day", date_pattern="yyyy-mm-dd")
+    cal.pack()
     
     # Campos de hora
     tk.Label(frame_opciones, text="Hora (HH:MM:SS AM/PM):").pack()
@@ -137,7 +138,7 @@ def interfaz_principal():
         lon = entry_longitud.get()
         metros = entry_metros.get()
         fecha = "2024-07-22"
-        #cal.get_date()
+        cal.get_date()
         hora = entry_hora.get()
         minutos = entry_minutos.get()
         segundos = entry_segundos.get()
@@ -154,7 +155,6 @@ def interfaz_principal():
 
             procesar_imagenes(lat, lon, metros, fecha_hora, hora)
             messagebox.showinfo("Éxito", "Las imágenes han sido procesadas correctamente.")
-            root.destroy()  # Cerrar la ventana principal
         else:
             print("Por favor completa todos los campos.")
 
