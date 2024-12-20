@@ -157,6 +157,8 @@ def interfaz_principal():
 
             procesar_imagenes(lat, lon, metros, fecha, hora_completa)
             messagebox.showinfo("Éxito", "Las imágenes han sido procesadas correctamente.")
+            # Cerrar la ventana principal
+            ventana.destroy()
         else:
             print("Por favor completa todos los campos.")
 
