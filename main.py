@@ -1,9 +1,6 @@
 import datetime
 from logging import root
-import os
-import shutil
 from tkinter import messagebox
-import cv2
 import tkinter as tk
 
 from datetime import datetime
@@ -17,32 +14,6 @@ from funciones import *
 
 import locale
 locale.setlocale(locale.LC_TIME, "es_ES.UTF-8")  # Configura el idioma a español
-
-def procesar_imagenes(lat, lon, metros, fecha, hora):
-    # Limpio la carpeta de editadas
-    if os.path.exists(".\\imagenes_editadas"):
-        shutil.rmtree(".\\imagenes_editadas")
-    os.makedirs(".\\imagenes_editadas")
-    
-    coordenadas_metros = f"{lat}, {lon}, {metros} m"
-    fecha_hora = f"{fecha} {hora}"
-
-    ruta_imagenes = "./imagenes"
-    imagenes = abrir_imagenes_en_carpeta(ruta_imagenes)
-
-    for nombre_archivo, imagen in imagenes:
-        if imagen is not None:
-            imagen_con_texto = agregar_texto_con_contorno(
-                imagen,
-                coordenadas_metros=coordenadas_metros,
-                fecha=fecha_hora,
-                fuente_path="calibri.ttf",
-            )
-            ruta_guardado = f"./imagenes_editadas/{nombre_archivo}"
-            cv2.imwrite(ruta_guardado, imagen_con_texto)
-            print(f"Imagen guardada: {ruta_guardado}")
-    
-
 
 def obtener_coordenadas_por_direccion(direccion):
     geolocator = Nominatim(user_agent="geoapi")
@@ -59,50 +30,68 @@ def obtener_coordenadas_por_direccion(direccion):
 def interfaz_principal():
     ventana = tk.Tk()
     ventana.title("Procesar Imágenes con Coordenadas")
-    ventana.geometry("1100x600")
-
-    frame_opciones = tk.Frame(ventana)
-    frame_opciones.pack(side=tk.LEFT, fill=tk.Y, padx=10, pady=10)
-
-    frame_mapa = tk.Frame(ventana)
-    frame_mapa.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10, pady=10)
-
-    # Entradas de datos
-    tk.Label(frame_opciones, text="Latitud:").pack()
-    entry_latitud = tk.Entry(frame_opciones)
-    entry_latitud.pack()
-
-    tk.Label(frame_opciones, text="Longitud:").pack()
-    entry_longitud = tk.Entry(frame_opciones)
-    entry_longitud.pack()
-
-    tk.Label(frame_opciones, text="Altura (m):").pack()
-    entry_metros = tk.Entry(frame_opciones)
-    entry_metros.pack()
     
-    tk.Label(frame_opciones, text="Fecha:").pack()
+    # Obtener el tamaño de la pantalla
+    pantalla_width = ventana.winfo_screenwidth()
+    pantalla_height = ventana.winfo_screenheight()
+    
+    # Definir el tamaño de la ventana
+    ventana_width = 1100
+    ventana_height = 600
+    
+    # Calcular la posición X y Y para centrar la ventana
+    posicion_x = int((pantalla_width - ventana_width) / 2)
+    posicion_y = int((pantalla_height - ventana_height) / 2)
+    
+    # Establecer la geometría de la ventana
+    ventana.geometry(f"{ventana_width}x{ventana_height}+{posicion_x}+{posicion_y}")   
+    
+    ventana.columnconfigure(0, weight=1)  # Expande la primera columna
+    ventana.columnconfigure(1, weight=2)  # Expande la segunda columna
+    ventana.rowconfigure(0, weight=1)     # Expande la primera fila
+
+    # Frame de opciones
+    frame_opciones = tk.Frame(ventana, bg="white", relief="solid", bd=1)
+    frame_opciones.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+
+    # Frame de mapa
+    frame_mapa = tk.Frame(ventana, bg="white", relief="solid", bd=1)
+    frame_mapa.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+
+    # Entradas de datos en frame_opciones
+    tk.Label(frame_opciones, text="Latitud:").grid(row=3, column=0, padx=5, pady=5, sticky="w")
+    entry_latitud = tk.Entry(frame_opciones)
+    entry_latitud.grid(row=3, column=1, padx=5, pady=5, sticky="ew")
+
+    tk.Label(frame_opciones, text="Longitud:").grid(row=4, column=0, padx=5, pady=5, sticky="w")
+    entry_longitud = tk.Entry(frame_opciones)
+    entry_longitud.grid(row=4, column=1, padx=5, pady=5, sticky="ew")
+    
+    tk.Label(frame_opciones, text="Altura (m):").grid(row=5, column=0, padx=5, pady=5, sticky="w")
+    entry_metros = tk.Entry(frame_opciones)
+    entry_metros.grid(row=5, column=1, padx=5, pady=5, sticky="ew")
+    
+    tk.Label(frame_opciones, text="Fecha:").grid(row=6, column=0, padx=5, pady=5, sticky="w")
     cal = Calendar(frame_opciones, selectmode="day", date_pattern="yyyy-mm-dd")
-    cal.pack()
+    cal.grid(row=6, column=1, padx=5, pady=5, sticky="ew")
     
     # Campos de hora
-    tk.Label(frame_opciones, text="Hora (HH:MM:SS AM/PM):").pack()
+    tk.Label(frame_opciones, text="Hora (HH:MM:SS):").grid(row=7, column=0, padx=5, pady=5, sticky="w")
     entry_hora = tk.Entry(frame_opciones, width=5)
-    entry_hora.pack()
+    entry_hora.grid(row=7, column=1, padx=5, pady=5, sticky="w")
     entry_minutos = tk.Entry(frame_opciones, width=5)
-    entry_minutos.pack()
+    entry_minutos.grid(row=8, column=1, padx=5, pady=5, sticky="w")
     entry_segundos = tk.Entry(frame_opciones, width=5)
-    entry_segundos.pack()
+    entry_segundos.grid(row=9, column=1, padx=5, pady=5, sticky="w")    
 
-    # Menú desplegable para AM/PM
     am_pm_var = tk.StringVar(value="AM")
     am_pm_menu = tk.OptionMenu(frame_opciones, am_pm_var, "AM", "PM")
-    am_pm_menu.pack()
-    
+    am_pm_menu.grid(row=10, column=1, padx=5, pady=5, sticky="w")   
 
-    # Mapa interactivo
+    # Mapa interactivo en frame_mapa
     map_widget = TkinterMapView(frame_mapa, width=600, height=500)
     map_widget.set_tile_server("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png")
-    map_widget.set_position(-34.905427, -56.196684)  # Coordenadas iniciales (Montevideo)
+    map_widget.set_position(-34.905427, -56.196684) # Coordenadas iniciales (Montevideo)
     map_widget.pack(fill=tk.BOTH, expand=True)
 
     marker = None
@@ -130,11 +119,11 @@ def interfaz_principal():
     map_widget.bind("<Button-1>", actualizar_coordenadas)
 
     # Entrada para búsqueda de dirección
-    tk.Label(frame_opciones, text="Buscar Dirección:").pack(pady=5)
-    entry_direccion = tk.Entry(frame_opciones)
-    entry_direccion.pack()
+    tk.Label(frame_opciones, text="Buscar Dirección:").grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    entry_direccion = tk.Entry(frame_opciones, width=45)
+    entry_direccion.grid(row=0, column=1, padx=5, pady=5, sticky="w") 
     boton_buscar = tk.Button(frame_opciones, text="Buscar", command=buscar_direccion)
-    boton_buscar.pack(pady=5)
+    boton_buscar.grid(row=0, column=2, columnspan=2, pady=1)
 
     def procesar():
         lat = entry_latitud.get()
@@ -162,8 +151,9 @@ def interfaz_principal():
         else:
             print("Por favor completa todos los campos.")
 
-    boton_procesar = tk.Button(frame_opciones, text="Procesar Imágenes", command=procesar)
-    boton_procesar.pack(pady=10)
+    # Botón de procesar
+    boton_procesar = tk.Button(frame_opciones, text="Procesar Imágenes", command=procesar, width=18, height=2, font=("Arial", 10))
+    boton_procesar.grid(row=12, column=0, columnspan=2, pady=10)
 
     ventana.mainloop()
 

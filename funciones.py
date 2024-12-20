@@ -1,4 +1,5 @@
 import os
+import shutil
 import cv2
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
@@ -89,3 +90,28 @@ def agregar_texto_con_contorno(imagen, coordenadas_metros, fecha, fuente_path, t
     except Exception as e:
         print(f"Error al agregar texto: {e}")
         return None
+    
+    
+def procesar_imagenes(lat, lon, metros, fecha, hora):
+    # Limpio la carpeta de editadas
+    if os.path.exists(".\\imagenes_editadas"):
+        shutil.rmtree(".\\imagenes_editadas")
+    os.makedirs(".\\imagenes_editadas")
+    
+    coordenadas_metros = f"{lat}, {lon}, {metros} m"
+    fecha_hora = f"{fecha} {hora}"
+
+    ruta_imagenes = "./imagenes"
+    imagenes = abrir_imagenes_en_carpeta(ruta_imagenes)
+
+    for nombre_archivo, imagen in imagenes:
+        if imagen is not None:
+            imagen_con_texto = agregar_texto_con_contorno(
+                imagen,
+                coordenadas_metros=coordenadas_metros,
+                fecha=fecha_hora,
+                fuente_path="calibri.ttf",
+            )
+            ruta_guardado = f"./imagenes_editadas/{nombre_archivo}"
+            cv2.imwrite(ruta_guardado, imagen_con_texto)
+            print(f"Imagen guardada: {ruta_guardado}")
