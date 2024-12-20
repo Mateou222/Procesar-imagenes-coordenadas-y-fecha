@@ -46,12 +46,15 @@ def procesar_imagenes(lat, lon, metros, fecha, hora):
 
 def obtener_coordenadas_por_direccion(direccion):
     geolocator = Nominatim(user_agent="geoapi")
-    location = geolocator.geocode(direccion)
-    if location:
-        return location.latitude, location.longitude
-    else:
+    try:
+        location = geolocator.geocode(direccion, country_codes="UY")  # Restringe a Uruguay (UY es el código ISO del país)
+        if location:
+            return location.latitude, location.longitude
+        else:
+            return None, None
+    except Exception as e:
+        print(f"Error al buscar dirección: {e}")
         return None, None
-
 
 def interfaz_principal():
     ventana = tk.Tk()
