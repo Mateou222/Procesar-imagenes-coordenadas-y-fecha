@@ -137,8 +137,7 @@ def interfaz_principal():
         lat = entry_latitud.get()
         lon = entry_longitud.get()
         metros = entry_metros.get()
-        fecha = "2024-07-22"
-        cal.get_date()
+        fecha = cal.get_date()
         hora = entry_hora.get()
         minutos = entry_minutos.get()
         segundos = entry_segundos.get()
@@ -151,9 +150,9 @@ def interfaz_principal():
 
             # Construir la cadena de hora con AM/PM
             hora_completa = f"{hora}:{minutos}:{segundos} {am_pm.upper()}"
-            fecha_hora = f"{fecha_formateada} {hora_completa}"
+            fecha = f"{fecha_formateada}"
 
-            procesar_imagenes(lat, lon, metros, fecha_hora, hora)
+            procesar_imagenes(lat, lon, metros, fecha, hora_completa)
             messagebox.showinfo("Éxito", "Las imágenes han sido procesadas correctamente.")
         else:
             print("Por favor completa todos los campos.")
