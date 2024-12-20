@@ -24,7 +24,7 @@ def obtener_coordenadas_por_direccion(direccion):
         else:
             return None, None
     except Exception as e:
-        print(f"Error al buscar dirección: {e}")
+        messagebox.showinfo(f"Error", "Error al buscar dirección: {e}")
         return None, None
 
 def interfaz_principal():
@@ -114,7 +114,7 @@ def interfaz_principal():
             map_widget.set_position(lat, lon)
             actualizar_coordenadas(None)
         else:
-            print("Dirección no encontrada.")
+            messagebox.showinfo("Error", "Dirección no encontrada.")
 
     map_widget.bind("<Button-1>", actualizar_coordenadas)
 
@@ -149,7 +149,7 @@ def interfaz_principal():
             # Cerrar la ventana principal
             ventana.destroy()
         else:
-            print("Por favor completa todos los campos.")
+            messagebox.showinfo("Error", "Por favor completa todos los campos.")
 
     # Botón de procesar
     boton_procesar = tk.Button(frame_opciones, text="Procesar Imágenes", command=procesar, width=18, height=2, font=("Arial", 10))
